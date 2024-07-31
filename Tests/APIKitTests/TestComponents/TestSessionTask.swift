@@ -1,12 +1,12 @@
 import Foundation
 import APIKit
 
-class TestSessionTask: SessionTask {
-    
-    var handler: (Data?, URLResponse?, Error?) -> Void
-    var cancelled = false
+final class TestSessionTask: SessionTask {
 
-    init(handler: @escaping (Data?, URLResponse?, Error?) -> Void) {
+    let handler: @Sendable (Data?, URLResponse?, Error?) -> Void
+    let cancelled = UncheckedSendableBox(value: false)
+
+    init(handler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) {
         self.handler = handler
     }
 
@@ -15,6 +15,6 @@ class TestSessionTask: SessionTask {
     }
 
     func cancel() {
-        cancelled = true
+        cancelled.value = true
     }
 }

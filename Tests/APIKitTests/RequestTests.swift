@@ -29,14 +29,14 @@ class RequestTests: XCTestCase {
     }
 
     func testPOSTJSONRequest() throws {
-        let parameters: [Any] = [
+        let parameters: [Sendable] = [
             ["id": "1"],
             ["id": "2"],
             ["hello", "yellow"]
         ]
 
         let request = TestRequest(method: .post, parameters: parameters)
-        XCTAssert((request.parameters as? [Any])?.count == 3)
+        XCTAssert((request.parameters as? [Sendable])?.count == 3)
 
         let urlRequest = try request.buildURLRequest()
 

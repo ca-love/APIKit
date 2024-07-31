@@ -1,7 +1,7 @@
 import Foundation
 
 /// `SessionTask` protocol represents a task for a request.
-public protocol SessionTask: AnyObject {
+public protocol SessionTask: AnyObject, Sendable {
     func resume()
     func cancel()
 }
@@ -11,8 +11,8 @@ public protocol SessionTask: AnyObject {
 /// with `Session`.
 public protocol SessionAdapter {
     /// Returns instance that conforms to `SessionTask`. `handler` must be called after success or failure.
-    func createTask(with URLRequest: URLRequest, handler: @escaping (Data?, URLResponse?, Error?) -> Void) -> SessionTask
+    func createTask(with URLRequest: URLRequest, handler: @escaping @Sendable (Data?, URLResponse?, Error?) -> Void) -> SessionTask
 
     /// Collects tasks from backend networking stack. `handler` must be called after collecting.
-    func getTasks(with handler: @escaping ([SessionTask]) -> Void)
+    func getTasks(with handler: @escaping @Sendable ([SessionTask]) -> Void)
 }

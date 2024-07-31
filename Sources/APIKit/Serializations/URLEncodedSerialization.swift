@@ -47,7 +47,7 @@ public final class URLEncodedSerialization {
     public enum Error: Swift.Error {
         case cannotGetStringFromData(Data, String.Encoding)
         case cannotGetDataFromString(String, String.Encoding)
-        case cannotCastObjectToDictionary(Any)
+        case cannotCastObjectToDictionary(ErrorObject<Any>)
         case invalidFormatString(String)
     }
 
@@ -76,7 +76,7 @@ public final class URLEncodedSerialization {
     /// - Throws: URLEncodedSerialization.Error
     public static func data(from object: Any, encoding: String.Encoding) throws -> Data {
         guard let dictionary = object as? [String: Any] else {
-            throw Error.cannotCastObjectToDictionary(object)
+            throw Error.cannotCastObjectToDictionary(.init(value: object))
         }
 
         let string = self.string(from: dictionary)

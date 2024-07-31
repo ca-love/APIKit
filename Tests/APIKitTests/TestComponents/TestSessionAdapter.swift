@@ -39,7 +39,7 @@ class TestSessionAdapter: SessionAdapter {
 
     func executeAllTasks() {
         for task in tasks {
-            if task.cancelled {
+            if task.cancelled.value {
                 task.handler(nil, nil, Error.cancelled)
             } else {
                 task.handler(data, urlResponse, error)
@@ -49,7 +49,7 @@ class TestSessionAdapter: SessionAdapter {
         tasks = []
     }
 
-    func createTask(with URLRequest: URLRequest, handler: @escaping (Data?, URLResponse?, Swift.Error?) -> Void) -> SessionTask {
+    func createTask(with URLRequest: URLRequest, handler: @escaping @Sendable (Data?, URLResponse?, Swift.Error?) -> Void) -> SessionTask {
         let task = TestSessionTask(handler: handler)
         tasks.append(task)
 
