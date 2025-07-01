@@ -11,5 +11,5 @@ public enum ResponseError: Error {
     case unacceptableStatusCode(Int)
 
     /// Indicates `Any` that represents the response is unexpected.
-    case unexpectedObject(Any)
+    case unexpectedObject(ErrorObject<Any>)
 }

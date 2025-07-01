@@ -10,7 +10,7 @@ struct TestRequest: Request {
     // MARK: Request
     typealias Response = Any
 
-    init(baseURL: String = "https://example.com", path: String = "/", method: HTTPMethod = .get, parameters: Any? = [:], headerFields: [String: String] = [:], interceptURLRequest: @escaping (URLRequest) throws -> URLRequest = { $0 }) {
+    init(baseURL: String = "https://example.com", path: String = "/", method: HTTPMethod = .get, parameters: Sendable? = [:], headerFields: [String: String] = [:], interceptURLRequest: @escaping @Sendable (URLRequest) throws -> URLRequest = { $0 }) {
         self.baseURL = URL(string: baseURL)!
         self.path = path
         self.method = method
@@ -22,9 +22,9 @@ struct TestRequest: Request {
     let baseURL: URL
     let method: HTTPMethod
     let path: String
-    let parameters: Any?
+    let parameters: Sendable?
     let headerFields: [String: String]
-    let interceptURLRequest: (URLRequest) throws -> URLRequest
+    let interceptURLRequest: @Sendable (URLRequest) throws -> URLRequest
 
     func intercept(urlRequest: URLRequest) throws -> URLRequest {
         return try interceptURLRequest(urlRequest)

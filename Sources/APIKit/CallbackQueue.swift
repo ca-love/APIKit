@@ -1,7 +1,7 @@
 import Foundation
 
 /// `CallbackQueue` represents queue where `handler` of `Session.send(_:handler:)` runs.
-public enum CallbackQueue {
+public enum CallbackQueue: Sendable {
     /// Dispatches callback closure on main queue asynchronously.
     case main
 
@@ -14,7 +14,7 @@ public enum CallbackQueue {
     /// Dispatches callback closure on associated dispatch queue.
     case dispatchQueue(DispatchQueue)
 
-    public func execute(closure: @escaping () -> Void) {
+    public func execute(closure: @escaping @Sendable () -> Void) {
         switch self {
         case .main:
             DispatchQueue.main.async {

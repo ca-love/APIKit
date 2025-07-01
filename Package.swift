@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "APIKit",
     platforms: [
-        .macOS(.v10_10), .iOS(.v9), .tvOS(.v9), .watchOS(.v2)
+        .macOS(.v13), .iOS(.v16), .tvOS(.v16), .watchOS(.v9)
     ],
     products: [
         .library(name: "APIKit", targets: ["APIKit"]),

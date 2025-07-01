@@ -22,10 +22,10 @@ public extension Session {
         let cancellationHandler = SessionTaskCancellationHandler()
         return try await withTaskCancellationHandler(operation: {
             return try await withCheckedThrowingContinuation { continuation in
+                let sessionTask = createSessionTask(request, callbackQueue: callbackQueue) { result in
+                    continuation.resume(with: result)
+                }
                 Task {
-                    let sessionTask = createSessionTask(request, callbackQueue: callbackQueue) { result in
-                        continuation.resume(with: result)
-                    }
                     await cancellationHandler.register(with: sessionTask)
                     if await cancellationHandler.isTaskCancelled {
                         sessionTask?.cancel()

@@ -7,7 +7,7 @@ import Foundation
 /// - `var method: HTTPMethod`
 /// - `var path: String`
 /// - `func response(from object: Any, urlResponse: HTTPURLResponse) throws -> Response`
-public protocol Request {
+public protocol Request: Sendable {
     /// The response type associated with the request type.
     associatedtype Response
 
@@ -23,12 +23,12 @@ public protocol Request {
     /// The convenience property for `queryParameters` and `bodyParameters`. If the implementation of
     /// `queryParameters` and `bodyParameters` are not provided, the values for them will be computed
     /// from this property depending on `method`.
-    var parameters: Any? { get }
+    var parameters: Sendable? { get }
 
     /// The actual parameters for the URL query. The values of this property will be escaped using `URLEncodedSerialization`.
     /// If this property is not implemented and `method.prefersQueryParameter` is `true`, the value of this property
     /// will be computed from `parameters`.
-    var queryParameters: [String: Any]? { get }
+    var queryParameters: [String: Sendable]? { get }
 
     /// The actual parameters for the HTTP body. If this property is not implemented and `method.prefersQueryParameter` is `false`,
     /// the value of this property will be computed from `parameters` using `JSONBodyParameters`.
@@ -61,12 +61,12 @@ public protocol Request {
 }
 
 public extension Request {
-    var parameters: Any? {
+    var parameters: Sendable? {
         return nil
     }
 
-    var queryParameters: [String: Any]? {
-        guard let parameters = parameters as? [String: Any], method.prefersQueryParameters else {
+    var queryParameters: [String: Sendable]? {
+        guard let parameters = parameters as? [String: Sendable], method.prefersQueryParameters else {
             return nil
         }
 

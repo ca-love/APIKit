@@ -28,15 +28,15 @@ public struct SessionTaskPublisher<Request: APIKit.Request>: Publisher {
                                                                  downstream: subscriber))
     }
 
-    private final class SessionTaskSubscription<Request: APIKit.Request, Downstream: Subscriber>: Subscription where Request.Response == Downstream.Input, Downstream.Failure == Failure {
+    private final class SessionTaskSubscription<Req: APIKit.Request, Downstream: Subscriber>: Subscription where Req.Response == Downstream.Input, Downstream.Failure == Failure {
 
-        private let request: Request
+        private let request: Req
         private let session: Session
         private let callbackQueue: CallbackQueue?
         private var downstream: Downstream?
         private var task: SessionTask?
 
-        init(request: Request, session: Session, callbackQueue: CallbackQueue?, downstream: Downstream) {
+        init(request: Req, session: Session, callbackQueue: CallbackQueue?, downstream: Downstream) {
             self.request = request
             self.session = session
             self.callbackQueue = callbackQueue
@@ -47,13 +47,14 @@ public struct SessionTaskPublisher<Request: APIKit.Request>: Publisher {
             assert(demand > 0)
             guard let downstream = self.downstream else { return }
             self.downstream = nil
+            let ds = UncheckedSendableBox(value: downstream)
             task = session.send(request, callbackQueue: callbackQueue) { result in
                 switch result {
                 case .success(let response):
-                    _ = downstream.receive(response)
-                    downstream.receive(completion: .finished)
+                    _ = ds.value.receive(response)
+                    ds.value.receive(completion: .finished)
                 case .failure(let error):
-                    downstream.receive(completion: .failure(error))
+                    ds.value.receive(completion: .failure(error))
                 }
             }
         }
